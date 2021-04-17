@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage("test") {
             steps {
-                build job: 'kubernetes_deploy', parameters: [[$class: 'StringParameterValue', name: 'deployment_yaml', value: 'sa-frontend-deployment.yaml'], [$class: 'StringParameterValue', name: 'service_yaml', value: 'service-sa-frontend-lb.yaml'], [$class: 'StringParameterValue', name: 'build_number', value: $BUILD_NUMBER]]
+                build job: 'kubernetes_deploy', parameters: [[$class: 'StringParameterValue', name: 'deployment_yaml', value: 'sa-frontend-deployment.yaml'], [$class: 'StringParameterValue', name: 'service_yaml', value: 'service-sa-frontend-lb.yaml'], [$class: 'StringParameterValue', name: 'build_number', value: "${BUILD_NUMBER}"]]
             }
         }
     }
