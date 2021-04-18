@@ -11,8 +11,25 @@ pipeline {
         timestamps()
     }
     stages {
-        stage("test") {
+        stage("build React app") {
             steps {
+                echo " ============== building React app ================== "
+                sh "npm run build"
+            }
+        }
+        stage("docker image") {
+            steps {
+                echo " ============== build and push docker image ================== "
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_lashchenov', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh "docker login -u $USERNAME -p $PASSWORD"
+                }
+                sh "docker build -f Dockerfile -t lashchenov99/sa-frontend:$BUILD_NUMBER ."
+                sh "docker push lashchenov99/sa-frontend:$BUILD_NUMBER"        
+            }
+        }
+        stage("kubernetes deploy") {
+            steps {
+                echo " ============== deploying to kubernetes ================== "
                 sh "echo $BUILD_NUMBER"
                 build job: 'kubernetes_deploy', parameters: [[$class: 'StringParameterValue', name: 'deployment_yaml', value: 'sa-frontend-deployment.yaml'], [$class: 'StringParameterValue', name: 'service_yaml', value: 'service-sa-frontend-lb.yaml'], [$class: 'StringParameterValue', name: 'build_num', value: "${BUILD_NUMBER}"]]
             }
