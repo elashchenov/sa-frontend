@@ -5,7 +5,7 @@ class Polarity extends Component {
 
     propTypes = {
         sentence: PropTypes.string.isRequired,
-        polarity: PropTypes.number.isRequired
+        polarity: PropTypes.string.isRequired
     };
 
     render() {
