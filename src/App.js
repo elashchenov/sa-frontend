@@ -1,61 +1,68 @@
 import React, {Component} from 'react';
 import './App.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
 import Polarity from "./components/Polarity";
 
 const style = {
-    marginLeft: 12,
+  marginLeft: 12,
 };
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            sentence: '',
-            polarity: undefined
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      img: null,
+      polarity: undefined
     };
+  };
 
-    analyzeSentence() {
-        fetch('http://127.0.0.1:57744/sentiment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({sentence: this.textField.getValue()})
-        })
-            .then(response => response.json())
-            .then(data => this.setState(data));
+  analyzeSentence() {
+    const { img } = this.state;
+    fetch('http://localhost:8080/sentiment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({sentence: 'This'}) 
+    })
+      .then(response => response.json())
+      .then(data => this.setState(data));
+  }
+
+  handleImage(e) {
+    const blob = e.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = () => {
+      this.setState({ img: reader.result })
     }
+  }
 
-    onEnterPress = e => {
-        if (e.key === 'Enter') {
-            this.analyzeSentence();
-        }
-    };
+  render() {
+    const { polarity, sentence, img } = this.state;
+    const polarityComponent = polarity !== undefined ?
+      <Polarity sentence={sentence} polarity={polarity}/> :
+      null;
 
-    render() {
-        const polarityComponent = this.state.polarity !== undefined ?
-            <Polarity sentence={this.state.sentence} polarity={this.state.polarity}/> :
-            null;
-
-        return (
-            <MuiThemeProvider>
-                <div className="centerize">
-                    <Paper zDepth={1} className="content">
-                        <h2>Sentiment Analyser</h2>
-                        <TextField ref={ref => this.textField = ref} onKeyUp={this.onEnterPress.bind(this)}
-                                   hintText="Type your sentence."/>
-                        <RaisedButton  label="Send" style={style} onClick={this.analyzeSentence.bind(this)}/>
-                        {polarityComponent}
-                    </Paper>
-                </div>
-            </MuiThemeProvider>
-        );
-    }
+    return (
+      <MuiThemeProvider>
+        <div className="centerize">
+          <Paper zDepth={1} className="content">
+            <h2>Sentiment Analyser</h2>
+            {img && <img src={img} alt="Red dot" />}
+            <label>
+              <input type="file" onChange={this.handleImage.bind(this)} />
+            </label>
+            <RaisedButton label="Send" style={style} onClick={this.analyzeSentence.bind(this)}/>
+            {polarityComponent}
+          </Paper>
+        </div>
+      </MuiThemeProvider>
+    );
+  }
 }
 
 export default App;
