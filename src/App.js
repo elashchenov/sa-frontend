@@ -20,7 +20,7 @@ class App extends Component {
 
   analyzeSentence() {
     const { img } = this.state;
-    fetch('http://localhost:8080/sentiment', {
+    fetch('http://127.0.0.1:57744/sentiment', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
