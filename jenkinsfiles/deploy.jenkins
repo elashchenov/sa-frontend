@@ -1,5 +1,4 @@
 #!groovy
-// Run docker build
 properties([disableConcurrentBuilds()])
 
 pipeline {
@@ -21,7 +20,9 @@ pipeline {
             steps {
                 echo " ============== build and push docker image ================== "
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_lashchenov', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh "docker login -u $USERNAME -p $PASSWORD"
+                    sh """
+                    docker login -u $USERNAME -p $PASSWORD
+                    """
                 }
                 sh "docker build -f Dockerfile -t lashchenov99/sa-frontend:$BUILD_NUMBER ."
                 sh "docker push lashchenov99/sa-frontend:$BUILD_NUMBER"        
