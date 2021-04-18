@@ -51,7 +51,7 @@ class App extends Component {
       <MuiThemeProvider>
         <div className="centerize">
           <Paper zDepth={1} className="content">
-            <h2>Sentiment Analyser</h2>
+            <h2>Cats vs Dogs</h2>
             {img && <img src={img} alt="Red dot" />}
             <label>
               <input type="file" onChange={this.handleImage.bind(this)} />
