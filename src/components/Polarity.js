@@ -16,7 +16,7 @@ class Polarity extends Component {
             padding: '15px'
         };
 
-        return <div style={textColor}>{this.props.sentence} is {this.props.polarity}! </div>
+        return <div style={textColor}>This is cat! </div>
     }
 }
 
